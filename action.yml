@@ -13,6 +13,9 @@ inputs:
   list_of_github_users:
     description: 'List of Github users to send Slack DM to'
     required: true
+  message:
+    description: 'Message to send to the user'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -21,3 +24,4 @@ runs:
     - ${{ inputs.github_token }}
     - ${{ inputs.list_of_github_users }}
     - ${{ inputs.github_org_id }}
+    - ${{ inputs.message }}

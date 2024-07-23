@@ -1,6 +1,6 @@
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from exceptions import SlackUserNotFoundException
+from src.exceptions import SlackUserNotFoundException
 
 
 class SlackClient:

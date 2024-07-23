@@ -3,6 +3,7 @@ import os
 import src
 
 from src import main, clients
+from src.exceptions import SlackUserNotFoundException
 from src.clients.github.graphql import GithubGraphqlClient
 from src.clients.slack.client import SlackClient
 
@@ -20,6 +21,38 @@ def test_input_validation_missing_required():
     del os.environ["INPUT_GITHUB_TOKEN"]
     del os.environ["INPUT_SLACK_TOKEN"]
     del os.environ["INPUT_LIST_OF_GITHUB_USER"]
+
+
+def test_run_no_slack_id(mocker):
+    mocker.patch(
+        "os.getenv",
+        side_effect=lambda var: {
+            "INPUT_GITHUB_TOKEN": "gh",
+            "INPUT_SLACK_TOKEN": "xoxb",
+            "INPUT_LIST_OF_GITHUB_USER": '["jordan_sullivan"]',
+            "INPUT_GITHUB_ORG": "sacred_heart",
+            "INPUT_MESSAGE": "Hooch is crazy!",
+        }.get(var),
+    )
+
+    mocker.patch(
+        "src.clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user",
+        return_value=["jsulliavan@sacredheart.com", "jordan_sullivan@sacredheart.com"],
+    )
+    mocker.patch(
+        "src.clients.slack.client.SlackClient.send_dm_to_user", return_value=None
+    )
+    mocker.patch(
+        "src.clients.slack.client.SlackClient.find_user_by_email",
+        side_effect=SlackUserNotFoundException,
+    )
+
+    with pytest.raises(SystemExit) as e:
+        main.run()
+
+    assert e.value.code == 1
+    assert src.clients.slack.client.SlackClient.find_user_by_email.call_count == 2
+    assert src.clients.slack.client.SlackClient.send_dm_to_user.call_count == 0
 
 
 def test_run_all_env_vars_present(mocker):
