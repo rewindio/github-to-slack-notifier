@@ -1,6 +1,6 @@
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from exceptions import UserNotFoundException
+from exceptions import SlackUserNotFoundException
 
 
 class SlackClient:
@@ -11,7 +11,9 @@ class SlackClient:
         response = self.client.users_lookupByEmail(email=email)
 
         if not response["ok"]:
-            raise UserNotFoundException(f"Failed to find user: {response['error']}")
+            raise SlackUserNotFoundException(
+                f"Failed to find user: {response['error']}"
+            )
 
         return response["user"]["id"]
 

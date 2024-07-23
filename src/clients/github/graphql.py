@@ -1,6 +1,6 @@
 import requests
 
-from exceptions import UserNotFoundException
+from exceptions import GithubUserNotFoundException
 
 from .queries import QUERIES
 from http import HTTPStatus
@@ -53,7 +53,7 @@ class GithubGraphqlClient:
                 raise Exception(f"Failed to make request: {data.status_code}")
 
         if user is None:
-            raise UserNotFoundException(
+            raise GithubUserNotFoundException(
                 f"User {git_user} not found in organization {self.org_id}"
             )
 
