@@ -1,0 +1,49 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/docker.yml'
+  workflow_dispatch:
+
+
+jobs:
+  docker-action:
+    name: Docker Action container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Get Date Tag
+        run: echo "TIMESTAMP_TAG=$(date '+%Y%m%d%H%M')" >> $GITHUB_ENV
+
+      - name: Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          platforms: linux/amd64
+          no-cache: true
+          pull: true
+          target: production
+          tags: "github-to-slack-notifier:${{ env.TIMESTAMP_TAG }}"
+          push: false
+
+      - name: Run Trivy to check Docker images for vulnerabilities
+        uses: aquasecurity/trivy-action@0.19.0
+        with:
+          image-ref: "github-to-slack-notifier:${{ env.TIMESTAMP_TAG }}"
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
