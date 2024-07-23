@@ -3,11 +3,13 @@ import os
 
 from src.clients.slack.client import SlackClient
 
+
 @pytest.fixture
 def fixture(mocker):
-    MockSlackWebClient = mocker.patch('src.clients.slack.client.WebClient')
+    MockSlackWebClient = mocker.patch("src.clients.slack.client.WebClient")
 
     return MockSlackWebClient
+
 
 def test_find_user_by_email(mocker, fixture):
 
@@ -19,7 +21,7 @@ def test_find_user_by_email(mocker, fixture):
             "id": "U01B2AB3D",
             "name": "elliot",
             "real_name": "Elliot Reid",
-        }
+        },
     }
 
     slack_client = SlackClient(token="xoxb-123")
@@ -27,18 +29,20 @@ def test_find_user_by_email(mocker, fixture):
 
     assert response == "U01B2AB3D"
 
+
 def test_find_user_by_email_with_exception(mocker, fixture):
     mock_client = fixture.return_value
 
     mock_client.users_lookupByEmail.return_value = {
         "ok": False,
-        "error": "user_not_found"
+        "error": "user_not_found",
     }
 
     slack_client = SlackClient(token="xoxb-123")
 
     with pytest.raises(Exception) as e:
         slack_client.find_user_by_email(email="allison@princetonplainsboro.health")
+
 
 def test_send_dm_to_user(mocker, fixture):
     mock_client = fixture.return_value
@@ -49,6 +53,7 @@ def test_send_dm_to_user(mocker, fixture):
     mock_client.chat_postMessage.assert_called_once_with(
         channel="U01B2AB3D", text="Hello, Elliot!"
     )
+
 
 def test_send_dm_to_user_with_exception(mocker, fixture):
     mock_client = fixture.return_value
