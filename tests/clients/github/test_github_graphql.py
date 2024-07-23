@@ -3,7 +3,7 @@ import requests
 import requests_mock
 import json
 
-from src.clients.github.github_graphql import GithubGraphqlClient
+from clients.github.graphql import GithubGraphqlClient
 
 MOCK_RESPONSE_WITH_PAGINATION = {
     "data": {
