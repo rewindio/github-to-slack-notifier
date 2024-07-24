@@ -1,0 +1,27 @@
+name: 'GitHub to Slack notifier'
+description: 'Sends a Slack DM to a user from a Github Action'
+inputs:
+  slack_bot_token:
+    description: 'Slack bot token'
+    required: true
+  github_token:
+    description: 'Github token'
+    required: true
+  github_org:
+    description: 'Github organization ID'
+    required: true
+  list_of_github_users:
+    description: 'List of Github users to send Slack DM to'
+    required: true
+  message:
+    description: 'Message to send to the user'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.slack_bot_token }}
+    - ${{ inputs.github_token }}
+    - ${{ inputs.list_of_github_users }}
+    - ${{ inputs.github_org_id }}
+    - ${{ inputs.message }}
