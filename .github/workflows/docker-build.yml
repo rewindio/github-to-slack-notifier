@@ -39,7 +39,7 @@ jobs:
           push: false
 
       - name: Run Trivy to check Docker images for vulnerabilities
-        uses: aquasecurity/trivy-action@0.19.0
+        uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: "github-to-slack-notifier:${{ env.TIMESTAMP_TAG }}"
           format: 'table'
