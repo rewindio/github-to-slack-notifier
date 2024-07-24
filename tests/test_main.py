@@ -38,9 +38,7 @@ def test_run_no_slack_id(mocker):
         "clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user",
         return_value=["jsulliavan@sacredheart.com", "jordan_sullivan@sacredheart.com"],
     )
-    mocker.patch(
-        "clients.slack.client.SlackClient.send_dm_to_user", return_value=None
-    )
+    mocker.patch("clients.slack.client.SlackClient.send_dm_to_user", return_value=None)
     mocker.patch(
         "clients.slack.client.SlackClient.find_user_by_email",
         side_effect=SlackUserNotFoundException,
@@ -73,16 +71,12 @@ def test_run_all_env_vars_present(mocker):
     mocker.patch(
         "clients.slack.client.SlackClient.find_user_by_email", return_value="jd"
     )
-    mocker.patch(
-        "clients.slack.client.SlackClient.send_dm_to_user", return_value=None
-    )
+    mocker.patch("clients.slack.client.SlackClient.send_dm_to_user", return_value=None)
 
     run()
 
     GithubGraphqlClient.get_corporate_emails_for_user.assert_called_once_with(
         "vanillabear"
     )
-    SlackClient.find_user_by_email.assert_called_once_with(
-        "jd@sacredheart.com"
-    )
+    SlackClient.find_user_by_email.assert_called_once_with("jd@sacredheart.com")
     SlackClient.send_dm_to_user.assert_called_once_with("jd", "Hooch is crazy!")

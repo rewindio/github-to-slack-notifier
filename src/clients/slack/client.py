@@ -3,6 +3,7 @@ from slack_sdk.errors import SlackApiError
 
 from exceptions import SlackUserNotFoundException
 
+
 class SlackClient:
     def __init__(self, token: str):
         self.client = WebClient(token=token)
