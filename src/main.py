@@ -3,9 +3,9 @@ import logging
 import os
 import json
 
-from src.clients.github.graphql import GithubGraphqlClient
-from src.clients.slack.client import SlackClient
-from src.exceptions import GithubUserNotFoundException, SlackUserNotFoundException
+from clients.github.graphql import GithubGraphqlClient
+from clients.slack.client import SlackClient
+from exceptions import GithubUserNotFoundException, SlackUserNotFoundException
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -40,11 +40,14 @@ def run():
     for user in users:
         try:
             emails = gh_graphql.get_corporate_emails_for_user(user)
+            sent_message = False
+
             for email in emails:
                 attempt = 1
-                sent_message = False
 
-                while attempt <= len(emails):
+                logger.info(f"Sending message to user with email {email}...")
+
+                while attempt <= len(emails) and not sent_message:
                     try:
                         slack_id = slack_client.find_user_by_email(email)
                         slack_client.send_dm_to_user(

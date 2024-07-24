@@ -1,7 +1,7 @@
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from src.exceptions import SlackUserNotFoundException
 
+from exceptions import SlackUserNotFoundException
 
 class SlackClient:
     def __init__(self, token: str):
@@ -19,6 +19,7 @@ class SlackClient:
 
     def send_dm_to_user(self, user_id: str, message: str):
         try:
-            self.client.chat_postMessage(channel=user_id, text=message)
+            resp = self.client.chat_postMessage(channel=user_id, text=message)
+            print(resp)
         except SlackApiError as e:
             raise Exception(f"Failed to send message: {e.response['error']}") from e

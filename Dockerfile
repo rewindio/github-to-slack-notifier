@@ -74,4 +74,6 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 WORKDIR ${APP_DIR}
 
 COPY pyproject.toml poetry.lock ./
-COPY src .
+COPY . .
+
+CMD [ "python3", "/app/src/main.py" ]

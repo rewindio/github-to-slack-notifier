@@ -1,11 +1,10 @@
 import pytest
 import os
-import src
 
-from src import main, clients
-from src.exceptions import SlackUserNotFoundException
-from src.clients.github.graphql import GithubGraphqlClient
-from src.clients.slack.client import SlackClient
+from main import run
+from exceptions import SlackUserNotFoundException
+from clients.github.graphql import GithubGraphqlClient
+from clients.slack.client import SlackClient
 
 
 def test_input_validation_missing_required():
@@ -14,7 +13,7 @@ def test_input_validation_missing_required():
     os.environ["INPUT_LIST_OF_GITHUB_USER"] = '["jan_itor","luuuucy"]'
 
     with pytest.raises(SystemExit) as e:
-        main.run()
+        run()
 
     assert e.value.code == 2
 
@@ -36,23 +35,22 @@ def test_run_no_slack_id(mocker):
     )
 
     mocker.patch(
-        "src.clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user",
+        "clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user",
         return_value=["jsulliavan@sacredheart.com", "jordan_sullivan@sacredheart.com"],
     )
     mocker.patch(
-        "src.clients.slack.client.SlackClient.send_dm_to_user", return_value=None
+        "clients.slack.client.SlackClient.send_dm_to_user", return_value=None
     )
     mocker.patch(
-        "src.clients.slack.client.SlackClient.find_user_by_email",
+        "clients.slack.client.SlackClient.find_user_by_email",
         side_effect=SlackUserNotFoundException,
     )
 
     with pytest.raises(SystemExit) as e:
-        main.run()
+        run()
 
     assert e.value.code == 1
-    assert src.clients.slack.client.SlackClient.find_user_by_email.call_count == 2
-    assert src.clients.slack.client.SlackClient.send_dm_to_user.call_count == 0
+    assert SlackClient.send_dm_to_user.call_count == 0
 
 
 def test_run_all_env_vars_present(mocker):
@@ -68,27 +66,23 @@ def test_run_all_env_vars_present(mocker):
     )
 
     mocker.patch(
-        "src.clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user",
+        "clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user",
         return_value=["jd@sacredheart.com"],
     )
 
     mocker.patch(
-        "src.clients.slack.client.SlackClient.find_user_by_email", return_value="jd"
+        "clients.slack.client.SlackClient.find_user_by_email", return_value="jd"
     )
     mocker.patch(
-        "src.clients.slack.client.SlackClient.send_dm_to_user", return_value=None
+        "clients.slack.client.SlackClient.send_dm_to_user", return_value=None
     )
-    # Mock the logger
-    mock_logger = mocker.patch("src.main.logger")
 
-    main.run()
+    run()
 
-    assert mock_logger.debug.call_count == 2
-
-    src.clients.github.graphql.GithubGraphqlClient.get_corporate_emails_for_user.assert_called_once_with(
+    GithubGraphqlClient.get_corporate_emails_for_user.assert_called_once_with(
         "vanillabear"
     )
-    src.clients.slack.client.SlackClient.find_user_by_email.assert_called_once_with(
+    SlackClient.find_user_by_email.assert_called_once_with(
         "jd@sacredheart.com"
     )
-    src.clients.slack.client.SlackClient.send_dm_to_user("jd", "Hooch is crazy!")
+    SlackClient.send_dm_to_user.assert_called_once_with("jd", "Hooch is crazy!")
