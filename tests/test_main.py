@@ -9,8 +9,8 @@ from clients.slack.client import SlackClient
 
 def test_input_validation_missing_required():
     os.environ["INPUT_GITHUB_TOKEN"] = "gh"
-    os.environ["INPUT_SLACK_TOKEN"] = "xoxb-123"
-    os.environ["INPUT_LIST_OF_GITHUB_USER"] = '["jan_itor","luuuucy"]'
+    os.environ["INPUT_SLACK_BOT_TOKEN"] = "xoxb-123"
+    os.environ["INPUT_LIST_OF_GITHUB_USERS"] = '["jan_itor","luuuucy"]'
 
     with pytest.raises(SystemExit) as e:
         run()
@@ -18,8 +18,8 @@ def test_input_validation_missing_required():
     assert e.value.code == 2
 
     del os.environ["INPUT_GITHUB_TOKEN"]
-    del os.environ["INPUT_SLACK_TOKEN"]
-    del os.environ["INPUT_LIST_OF_GITHUB_USER"]
+    del os.environ["INPUT_SLACK_BOT_TOKEN"]
+    del os.environ["INPUT_LIST_OF_GITHUB_USERS"]
 
 
 def test_run_no_slack_id(mocker):
@@ -27,8 +27,8 @@ def test_run_no_slack_id(mocker):
         "os.getenv",
         side_effect=lambda var: {
             "INPUT_GITHUB_TOKEN": "gh",
-            "INPUT_SLACK_TOKEN": "xoxb",
-            "INPUT_LIST_OF_GITHUB_USER": '["jordan_sullivan"]',
+            "INPUT_SLACK_BOT_TOKEN": "xoxb",
+            "INPUT_LIST_OF_GITHUB_USERS": '["jordan_sullivan"]',
             "INPUT_GITHUB_ORG": "sacred_heart",
             "INPUT_MESSAGE": "Hooch is crazy!",
         }.get(var),
@@ -56,8 +56,8 @@ def test_run_all_env_vars_present(mocker):
         "os.getenv",
         side_effect=lambda var: {
             "INPUT_GITHUB_TOKEN": "gh",
-            "INPUT_SLACK_TOKEN": "xoxb",
-            "INPUT_LIST_OF_GITHUB_USER": '["vanillabear"]',
+            "INPUT_SLACK_BOT_TOKEN": "xoxb",
+            "INPUT_LIST_OF_GITHUB_USERS": '["vanillabear"]',
             "INPUT_GITHUB_ORG": "sacred_heart",
             "INPUT_MESSAGE": "Hooch is crazy!",
         }.get(var),
