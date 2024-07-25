@@ -15,8 +15,8 @@ def run():
     # Validate the input
     required_env_vars = {
         "INPUT_GITHUB_TOKEN": "Missing GitHub token",
-        "INPUT_SLACK_TOKEN": "Missing Slack token",
-        "INPUT_LIST_OF_GITHUB_USER": "Missing list of GitHub users",
+        "INPUT_SLACK_BOT_TOKEN": "Missing Slack token",
+        "INPUT_LIST_OF_GITHUB_USERS": "Missing list of GitHub users",
         "INPUT_GITHUB_ORG": "Missing GitHub organization",
         "INPUT_MESSAGE": "Missing message",
     }
@@ -31,11 +31,11 @@ def run():
     gh_graphql = GithubGraphqlClient(
         token=os.getenv("INPUT_GITHUB_TOKEN"), org_id=os.getenv("INPUT_GITHUB_ORG")
     )
-    slack_client = SlackClient(token=os.getenv("INPUT_SLACK_TOKEN"))
+    slack_client = SlackClient(token=os.getenv("INPUT_SLACK_BOT_TOKEN"))
 
     logger.debug("Getting corporate emails for users...")
 
-    users = json.loads(os.getenv("INPUT_LIST_OF_GITHUB_USER"))
+    users = json.loads(os.getenv("INPUT_LIST_OF_GITHUB_USERS"))
 
     for user in users:
         try:

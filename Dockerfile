@@ -76,4 +76,4 @@ WORKDIR ${APP_DIR}
 COPY pyproject.toml poetry.lock ./
 COPY . .
 
-CMD [ "python3", "/app/src/main.py" ]
+ENTRYPOINT [ "python3", "/app/src/main.py" ]
