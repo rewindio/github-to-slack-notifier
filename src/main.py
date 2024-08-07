@@ -38,11 +38,13 @@ def run():
     users = get_list_of_users(os.getenv("INPUT_LIST_OF_GITHUB_USERS"))
 
     if users == []:
-        logger.error(f"""
+        logger.error(
+            f"""
             User(s) was not provided in an expected format.
                 Expected a string, comma-separated string or JSON list.
                 Got: {os.getenv("INPUT_LIST_OF_GITHUB_USERS")}
-            """)
+            """
+        )
         sys.exit(2)
 
     # Only one user - send a direct message
@@ -54,15 +56,15 @@ def run():
             slack_id = get_slack_id_for_user(slack_client, emails)
 
             if slack_id is None:
-                logger.error(f"Failed to find a Slack ID for user {user}. No message will be sent to this user")
+                logger.error(
+                    f"Failed to find a Slack ID for user {user}. No message will be sent to this user"
+                )
                 sys.exit(1)
 
             try:
                 slack_client.send_dm_to_user(slack_id, os.getenv("INPUT_MESSAGE"))
             except Exception as e:
-                logger.error(
-                            f"Failed to send message to user with email {email}: {e}"
-                        )
+                logger.error(f"Failed to send message to user with email {email}: {e}")
                 sys.exit(1)
 
         except GithubUserNotFoundException as e:
@@ -80,7 +82,9 @@ def run():
                 if user_slack_id is not None:
                     slack_ids.append(user_slack_id)
                 else:
-                    logger.warn(f"Failed to find a Slack ID for user {user}. No message will be sent to this user")
+                    logger.warn(
+                        f"Failed to find a Slack ID for user {user}. No message will be sent to this user"
+                    )
             except GithubUserNotFoundException as e:
                 logger.error(f"Failed to get emails for Github user {user}: {e}")
                 sys.exit(1)
@@ -92,6 +96,7 @@ def run():
             logger.error(f"Failed to send message to multiple users: {e}")
             sys.exit(1)
 
+
 def get_list_of_users(input):
     try:
         # is this json?
@@ -102,8 +107,8 @@ def get_list_of_users(input):
         pass
 
     # is this just a comma separated string?
-    if ',' in input:
-        return [item.strip() for item in input.split(',')]
+    if "," in input:
+        return [item.strip() for item in input.split(",")]
 
     # i'm just a string, i need no parsing
     if isinstance(input, str) and input.strip():
@@ -111,6 +116,7 @@ def get_list_of_users(input):
 
     # easy come, easy go...
     return []
+
 
 def get_slack_id_for_user(slack_client, emails):
     slack_id = None
@@ -132,9 +138,12 @@ def get_slack_id_for_user(slack_client, emails):
                 attempt += 1
 
     if not found_slack_id:
-        logger.warn(f"Failed to find a Slack ID with emails {emails}. No message will be sent to this user")
+        logger.warn(
+            f"Failed to find a Slack ID with emails {emails}. No message will be sent to this user"
+        )
 
     return slack_id
+
 
 if __name__ == "__main__":
     run()
