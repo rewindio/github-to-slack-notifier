@@ -13,7 +13,7 @@ The action requires the following input variables:
 | github_token                 |   Github token. See below for required permissions.  |
 | slack_bot_token                 |  Slack OAuth token. See below for required permissions. |
 | github_org                 |  Github Org ID  |
-| list_of_github_users | List of users to DM |
+| list_of_github_users | List of users to DM. Can be a single string, comma-separated string or a JSON list of strings. ("user", '["user"'], "user1,user2,user3") |
 | message | Message to send to user(s) |
 
 ### GITHUB_TOKEN permissions

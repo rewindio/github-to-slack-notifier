@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from main import run
+from main import run, get_list_of_users
 from exceptions import SlackUserNotFoundException
 from clients.github.graphql import GithubGraphqlClient
 from clients.slack.client import SlackClient
@@ -80,3 +80,14 @@ def test_run_all_env_vars_present(mocker):
     )
     SlackClient.find_user_by_email.assert_called_once_with("jd@sacredheart.com")
     SlackClient.send_dm_to_user.assert_called_once_with("jd", "Hooch is crazy!")
+
+parse_test_data = [
+    ('["vanillabear"]', ["vanillabear"]),
+    ("chocolatebear",  ["chocolatebear"]),
+    (" carla   ", ["carla"]),
+    ("dame_judy_dorian, lulu, zsa_zsa", ["dame_judy_dorian", "lulu", "zsa_zsa"]),
+]
+
+@pytest.mark.parametrize("actual, expected", parse_test_data)
+def test_parse_list_of_users(actual, expected):
+    assert get_list_of_users(actual) == expected

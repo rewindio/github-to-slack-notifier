@@ -35,7 +35,10 @@ def run():
 
     logger.debug("Getting corporate emails for users...")
 
-    users = json.loads(os.getenv("INPUT_LIST_OF_GITHUB_USERS"))
+    users = get_list_of_users(os.getenv("INPUT_LIST_OF_GITHUB_USERS"))
+
+    if users == []:
+        logger.warn(f"No users found in the input list. If users were provided, check the format. {os.getenv("INPUT_LIST_OF_GITHUB_USERS")}")
 
     for user in users:
         try:
@@ -73,6 +76,25 @@ def run():
             logger.error(f"Failed to get emails for Github user {user}: {e}")
             sys.exit(1)
 
+def get_list_of_users(input):
+    try:
+        # is this json?
+        parsed_value = json.loads(input)
+        if isinstance(parsed_value, list):
+            return parsed_value
+    except json.JSONDecodeError:
+        pass
+
+    # is this just a comma separted string?
+    if ',' in input:
+        return [item.strip() for item in input.split(',')]
+
+    # i'm just a string, i need no parsing
+    if isinstance(input, str) and input.strip():
+        return [input.strip()]
+
+    # easy come, easy go...
+    return []
 
 if __name__ == "__main__":
     run()
