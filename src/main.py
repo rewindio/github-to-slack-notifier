@@ -64,7 +64,7 @@ def run():
             try:
                 slack_client.send_dm_to_user(slack_id, os.getenv("INPUT_MESSAGE"))
             except Exception as e:
-                logger.error(f"Failed to send message to user with email {email}: {e}")
+                logger.error(f"Failed to send message to user {user}: {e}")
                 sys.exit(1)
 
         except GithubUserNotFoundException as e:
