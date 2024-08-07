@@ -64,3 +64,17 @@ def test_send_dm_to_user_with_exception(mocker, fixture):
 
     with pytest.raises(Exception) as e:
         slack_client.send_dm_to_user(user_id="U01B2AB3D", message="Hello, Elliot!")
+
+def test_send_mpdm_to_users(mocker, fixture):
+    mock_client = fixture.return_value
+
+    mock_client.conversations_open.return_value = {
+        "ok": True,
+        "channel": {"id": "C01B2AB3D"},
+    }
+
+    slack_client = SlackClient(token="xoxb-123")
+    slack_client.send_mpdm_to_users(user_ids=["U01B2AB3D", "U01B2AB3E"], message="Hello, Elliot!")
+
+    mock_client.conversations_open.assert_called_once_with(users=["U01B2AB3D", "U01B2AB3E"])
+    mock_client.chat_postMessage.assert_called_once_with(channel="C01B2AB3D", text="Hello, Elliot!")

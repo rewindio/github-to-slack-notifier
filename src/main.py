@@ -7,7 +7,7 @@ from clients.github.graphql import GithubGraphqlClient
 from clients.slack.client import SlackClient
 from exceptions import GithubUserNotFoundException, SlackUserNotFoundException
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger()
 
 
@@ -38,42 +38,58 @@ def run():
     users = get_list_of_users(os.getenv("INPUT_LIST_OF_GITHUB_USERS"))
 
     if users == []:
-        logger.warn(f"No users found in the input list. If users were provided, check the format. {os.getenv("INPUT_LIST_OF_GITHUB_USERS")}")
+        logger.error(f"""
+            User(s) was not provided in an expected format.
+                Expected a string, comma-separated string or JSON list.
+                Got: {os.getenv("INPUT_LIST_OF_GITHUB_USERS")}
+            """)
+        sys.exit(2)
 
-    for user in users:
+    # Only one user - send a direct message
+    if len(users) == 1:
+        user = users[0]
+
         try:
             emails = gh_graphql.get_corporate_emails_for_user(user)
-            sent_message = False
+            slack_id = get_slack_id_for_user(slack_client, emails)
 
-            for email in emails:
-                attempt = 1
+            if slack_id is None:
+                logger.error(f"Failed to find a Slack ID for user {user}. No message will be sent to this user")
+                sys.exit(1)
 
-                logger.info(f"Sending message to user with email {email}...")
-
-                while attempt <= len(emails) and not sent_message:
-                    try:
-                        slack_id = slack_client.find_user_by_email(email)
-                        slack_client.send_dm_to_user(
-                            slack_id, os.getenv("INPUT_MESSAGE")
-                        )
-
-                        sent_message = True
-                        break
-                    except SlackUserNotFoundException as e:
-                        logger.warn(f"No user in Slack with email {email}: {e}")
-                        attempt += 1
-                    except Exception as e:
-                        logger.error(
+            try:
+                slack_client.send_dm_to_user(slack_id, os.getenv("INPUT_MESSAGE"))
+            except Exception as e:
+                logger.error(
                             f"Failed to send message to user with email {email}: {e}"
                         )
-                        sys.exit(1)
-
-                if not sent_message:
-                    logger.error(f"Failed to find a Slack user with emails: {emails}")
-                    sys.exit(1)
+                sys.exit(1)
 
         except GithubUserNotFoundException as e:
             logger.error(f"Failed to get emails for Github user {user}: {e}")
+            sys.exit(1)
+
+    # More than one user, send a MPDM
+    if len(users) > 1:
+        slack_ids = []
+        for user in users:
+            try:
+                emails = gh_graphql.get_corporate_emails_for_user(user)
+                user_slack_id = get_slack_id_for_user(slack_client, emails)
+
+                if user_slack_id is not None:
+                    slack_ids.append(user_slack_id)
+                else:
+                    logger.warn(f"Failed to find a Slack ID for user {user}. No message will be sent to this user")
+            except GithubUserNotFoundException as e:
+                logger.error(f"Failed to get emails for Github user {user}: {e}")
+                sys.exit(1)
+
+        try:
+            slack_client.send_mpdm_to_users(slack_ids, os.getenv("INPUT_MESSAGE"))
+
+        except Exception as e:
+            logger.error(f"Failed to send message to multiple users: {e}")
             sys.exit(1)
 
 def get_list_of_users(input):
@@ -85,7 +101,7 @@ def get_list_of_users(input):
     except json.JSONDecodeError:
         pass
 
-    # is this just a comma separted string?
+    # is this just a comma separated string?
     if ',' in input:
         return [item.strip() for item in input.split(',')]
 
@@ -95,6 +111,30 @@ def get_list_of_users(input):
 
     # easy come, easy go...
     return []
+
+def get_slack_id_for_user(slack_client, emails):
+    slack_id = None
+    found_slack_id = False
+
+    for email in emails:
+        attempt = 1
+
+        logger.info(f"Sending message to user with email {email}...")
+
+        while attempt <= len(emails) and not found_slack_id:
+            try:
+                slack_id = slack_client.find_user_by_email(email)
+                found_slack_id = True
+
+                break
+            except SlackUserNotFoundException as e:
+                logger.warn(f"No user in Slack with email {email}: {e}")
+                attempt += 1
+
+    if not found_slack_id:
+        logger.warn(f"Failed to find a Slack ID with emails {emails}. No message will be sent to this user")
+
+    return slack_id
 
 if __name__ == "__main__":
     run()
