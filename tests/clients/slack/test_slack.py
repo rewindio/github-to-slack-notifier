@@ -74,7 +74,7 @@ def test_send_mpdm_to_users(mocker, fixture):
     }
 
     slack_client = SlackClient(token="xoxb-123")
-    slack_client.send_mpdm_to_users(user_ids=["U01B2AB3D", "U01B2AB3E"], message="Hello, Elliot!")
+    slack_client.send_mpdm_to_users(user_ids=["U01B2AB3D", "U01B2AB3E"], message="What is it with steel wool? Is it steel? Or is it wool?")
 
     mock_client.conversations_open.assert_called_once_with(users=["U01B2AB3D", "U01B2AB3E"])
-    mock_client.chat_postMessage.assert_called_once_with(channel="C01B2AB3D", text="Hello, Elliot!")
+    mock_client.chat_postMessage.assert_called_once_with(channel="C01B2AB3D", text="What is it with steel wool? Is it steel? Or is it wool?")

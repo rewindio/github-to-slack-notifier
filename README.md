@@ -29,6 +29,10 @@ The `SLACK_TOKEN` will require the following scopes:
 | :---------------- | :------: |
 | users:read.email  |  Required by the `users.lookupByEmail` method.  |
 | chat:write        | Required by the `chat.postMessage` method. |
+| channels:manage | Required by the `conversations.open` method. |
+| groups:write | Required by the `conversations.open` method. |
+| im:write | Required by the `conversations.open` method. |
+| mpim: write | Required by the `conversations.open` method. |
 
 ## Exit Codes
 
