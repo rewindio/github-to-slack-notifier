@@ -13,7 +13,7 @@ The action requires the following input variables:
 | github_token                 |   Github token. See below for required permissions.  |
 | slack_bot_token                 |  Slack OAuth token. See below for required permissions. |
 | github_org                 |  Github Org ID  |
-| list_of_github_users | List of users to DM |
+| list_of_github_users | List of users to DM. Can be a single string, comma-separated string or a JSON list of strings. ("user", '["user"'], "user1,user2,user3") |
 | message | Message to send to user(s) |
 
 ### GITHUB_TOKEN permissions
@@ -29,6 +29,10 @@ The `SLACK_TOKEN` will require the following scopes:
 | :---------------- | :------: |
 | users:read.email  |  Required by the `users.lookupByEmail` method.  |
 | chat:write        | Required by the `chat.postMessage` method. |
+| channels:manage | Required by the `conversations.open` method. |
+| groups:write | Required by the `conversations.open` method. |
+| im:write | Required by the `conversations.open` method. |
+| mpim: write | Required by the `conversations.open` method. |
 
 ## Exit Codes
 

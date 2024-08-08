@@ -20,7 +20,17 @@ class SlackClient:
 
     def send_dm_to_user(self, user_id: str, message: str):
         try:
-            resp = self.client.chat_postMessage(channel=user_id, text=message)
-            print(resp)
+            self.client.chat_postMessage(channel=user_id, text=message)
+
+        except SlackApiError as e:
+            raise Exception(f"Failed to send message: {e.response['error']}") from e
+
+    def send_mpdm_to_users(self, user_ids: list, message: str):
+        try:
+            resp = self.client.conversations_open(users=user_ids)
+            channel_id = resp["channel"]["id"]
+
+            self.send_dm_to_user(channel_id, message)
+
         except SlackApiError as e:
             raise Exception(f"Failed to send message: {e.response['error']}") from e
