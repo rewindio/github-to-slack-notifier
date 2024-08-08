@@ -7,7 +7,7 @@ from clients.github.graphql import GithubGraphqlClient
 from clients.slack.client import SlackClient
 from exceptions import GithubUserNotFoundException, SlackUserNotFoundException
 
-logging.basicConfig(level=logging.WARN)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
 
