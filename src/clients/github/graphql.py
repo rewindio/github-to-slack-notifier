@@ -82,7 +82,10 @@ class GithubGraphqlClient:
         If `user` is not an email address, just return it as-is.
 
         """
-        match = re.match(r'^(\d+\+)?([a-zA-Z0-9._%+-]+)(@users\.noreply\.github\.com|@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?$', user)
+        match = re.match(
+            r"^(\d+\+)?([a-zA-Z0-9._%+-]+)(@users\.noreply\.github\.com|@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?$",
+            user,
+        )
 
         if match:
             return match.group(2)

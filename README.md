@@ -50,7 +50,7 @@ The parameter `list_of_github_users` accepts a list of users to notify. This lis
 
 The list of users can be of the following values:
     - Private Github email address. This is in the format of `{ID}+{user}@users.noreply.github.com`
-    - Non-Private Github email address. This is in the format of `{user}@users.noreply.github.com`
+    - Private Github email address without ID prepend. This is in the format of `{user}@users.noreply.github.com`
     - An email address. This is in the format of `user@company.com`. Or
     - Github username.
 
