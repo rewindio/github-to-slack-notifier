@@ -134,11 +134,11 @@ def get_slack_id_for_user(slack_client, emails):
 
                 break
             except SlackUserNotFoundException as e:
-                logger.warn(f"No user in Slack with email {email}: {e}")
+                logger.warning(f"No user in Slack with email {email}: {e}")
                 attempt += 1
 
     if not found_slack_id:
-        logger.warn(
+        logger.warning(
             f"Failed to find a Slack ID with emails {emails}. No message will be sent to this user"
         )
 

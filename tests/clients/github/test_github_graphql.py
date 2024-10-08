@@ -72,6 +72,27 @@ def test_get_all_corporate_emails_for_user(requests_mock, fixture):
 
     assert emails == ["bob.kelso@sacredheart.com", "bkelso@sacredheart.com"]
 
+def test_get_all_corporate_emails_for_user_private_github_email(requests_mock, fixture):
+    requests_mock.post("https://api.github.com/graphql", json=MOCK_RESPONSE)
+
+    emails = fixture.get_corporate_emails_for_user("1234+two_thumbs@users.noreply.github.com")
+
+    assert emails == ["bob.kelso@sacredheart.com", "bkelso@sacredheart.com"]
+
+def test_get_all_corporate_emails_for_user_with_github_email(requests_mock, fixture):
+    requests_mock.post("https://api.github.com/graphql", json=MOCK_RESPONSE)
+
+    emails = fixture.get_corporate_emails_for_user("two_thumbs@users.noreply.github.com")
+
+    assert emails == ["bob.kelso@sacredheart.com", "bkelso@sacredheart.com"]
+
+def test_get_all_corporate_emails_for_user_with_custom_email(requests_mock, fixture):
+    requests_mock.post("https://api.github.com/graphql", json=MOCK_RESPONSE)
+
+    emails = fixture.get_corporate_emails_for_user("two_thumbs@sacredheart.com")
+
+    assert emails == ["bob.kelso@sacredheart.com", "bkelso@sacredheart.com"]
+
 
 def test_get_corporate_emails_for_user_with_pagination(requests_mock, fixture):
     requests_mock.post(
@@ -97,3 +118,15 @@ def test_exception_raise_if_user_not_found(requests_mock, fixture):
 
     with pytest.raises(Exception):
         fixture.get_corporate_emails_for_user("greghouse")
+
+parse_github_user_test_data = [
+    ('1234+jd@users.noreply.github.com', 'jd'),
+    ('turk@users.noreply.github.com', 'turk'),
+    ('hooch', 'hooch'),
+    ('jan.itor@rewind.io', 'jan.itor'),
+    ('3333+bob.kelso@rewind.io', 'bob.kelso')
+]
+
+@pytest.mark.parametrize("actual, expected", parse_github_user_test_data)
+def test_parse_github_user(actual, expected, fixture):
+    assert fixture._parse_user(actual) == expected
