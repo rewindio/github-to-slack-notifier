@@ -13,7 +13,7 @@ The action requires the following input variables:
 | github_token                 |   Github token. See below for required permissions.  |
 | slack_bot_token                 |  Slack OAuth token. See below for required permissions. |
 | github_org                 |  Github Org ID  |
-| list_of_github_users | List of users to DM. Can be a single string, comma-separated string or a JSON list of strings. ("user", '["user"'], "user1,user2,user3") |
+| list_of_github_users | List of users to DM. See Github Users for more information. |
 | message | Message to send to user(s) |
 
 ### GITHUB_TOKEN permissions
@@ -43,6 +43,18 @@ Github to Slack Notifier can exit with the following codes:
 | 0                 |   Everything went well  |
 | 1                 | Error querying API/GraphQL |
 | 2                 |   Missing required input variables. See logs.  |
+
+## Github Users
+
+The parameter `list_of_github_users` accepts a list of users to notify. This list can be a single string, comma-separated string or a JSON list of strings. ("user", '["user"'], "user1,user2,user3").
+
+The list of users can be of the following values:
+    - Private Github email address. This is in the format of `{ID}+{user}@users.noreply.github.com`
+    - Private Github email address without ID prepend. This is in the format of `{user}@users.noreply.github.com`
+    - An email address. This is in the format of `user@company.com`. Or
+    - Github username.
+
+[See Github documentation on profiles to understand why there are two formats of Github private email addresses](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address#about-commit-email-addresses)
 
 ## A note about e-mails
 

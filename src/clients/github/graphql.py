@@ -1,4 +1,5 @@
 import requests
+import re
 
 from exceptions import GithubUserNotFoundException
 
@@ -24,6 +25,7 @@ class GithubGraphqlClient:
         after = None
 
         user = None
+        git_username = self._parse_user(git_user)
 
         while True:
             reponse = self._make_post_request(query=query, after=after)
@@ -36,7 +38,7 @@ class GithubGraphqlClient:
                     (
                         edge["node"]
                         for edge in members
-                        if edge["node"]["login"] == git_user
+                        if edge["node"]["login"] == git_username
                     ),
                     None,
                 )
@@ -69,3 +71,23 @@ class GithubGraphqlClient:
         )
 
         return response
+
+    def _parse_user(self, user: str) -> str:
+        """
+        Parse the Github user ID from the value provided in the action.
+
+        If `user` is ID+username@users.noreply.github.com, return username.
+        If `user` is username@users.noreply.github.com, return username.
+        If `user` is an email address, return the username part of the email address
+        If `user` is not an email address, just return it as-is.
+
+        """
+        match = re.match(
+            r"^(\d+\+)?([a-zA-Z0-9._%+-]+)(@users\.noreply\.github\.com|@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?$",
+            user,
+        )
+
+        if match:
+            return match.group(2)
+        else:
+            return user
