@@ -4,7 +4,7 @@ ARG PYTHON_VERSION=python:3.12
 #####################################################################################
 # Python Base
 # hadolint ignore=DL3006
-FROM ${PYTHON_VERSION}-slim AS base
+FROM ${PYTHON_VERSION}-alpine AS base
 
 ARG TARGETARCH
 
@@ -20,9 +20,8 @@ ENV POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_CREATE=false \
     POETRY_VERSION=1.8.2
 
-RUN apt-get update && \
-    apt-get install -y \
-    curl
+RUN apk update && \
+    apk add --no-cache curl bash
 
 # Set the path
 ENV PATH="${POETRY_HOME}/bin:${VIRTUAL_ENV}/bin:${PATH}"
@@ -36,8 +35,8 @@ ENV PYTHONPATH="${APP_DIR}:${PYTHONPATH}"
 
 ENV APP_USER=webapp
 
-RUN addgroup --system --gid 1000 "${APP_USER}" \
-    && adduser --uid 1000 --gid 1000 "${APP_USER}" \
+RUN addgroup -g 1000 -S "${APP_USER}" \
+    && adduser -u 1000 -G "${APP_USER}" -S "${APP_USER}" \
     && chown -R "${APP_USER}":"${APP_USER}" "${APP_DIR}"
 
 #####################################################################################
