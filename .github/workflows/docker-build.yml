@@ -48,6 +48,9 @@ jobs:
 
       - name: Run Trivy to check Docker images for vulnerabilities
         uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
+        env:
+          TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db
         with:
           image-ref: "ghcr.io/${{ github.repository }}/github-to-slack-notifier:${{ env.TIMESTAMP_TAG }}"
           format: 'table'
