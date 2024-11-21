@@ -37,17 +37,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build for development
-        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v6.9.0
-        if:
+        uses: docker/bake-action@2e3d19baedb14545e5d41222653874f25d5b4dfb # v5.10.0
         with:
-          context: .
-          load: true
-          platforms: linux/amd64
-          no-cache: true
-          pull: true
-          target: production
-          tags: "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TIMESTAMP_TAG }}"
+          files: |
+            ./docker-bake.hcl
           push: true
+          targets: development
 
       - name: Run Trivy to check Docker images for vulnerabilities
         uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
