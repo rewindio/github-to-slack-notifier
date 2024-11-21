@@ -53,7 +53,7 @@ jobs:
         with:
           files: |
             ./docker-bake.hcl
-            ${{ steps.metadata.bake-file }}
+            ${{ steps.metadata.outputs.bake-file }}
           push: true
           load: true
           no-cache: true
