@@ -38,10 +38,16 @@ jobs:
 
       - name: Build for development
         uses: docker/bake-action@2e3d19baedb14545e5d41222653874f25d5b4dfb # v5.10.0
+        env:
+          REGISTRY: ${{ env.REGISTRY }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          TIMESTAMP_TAG: ${{ env.TIMESTAMP_TAG }}
         with:
           files: |
             ./docker-bake.hcl
           push: true
+          load: true
+          no-cache: true
           targets: development
 
       - name: Run Trivy to check Docker images for vulnerabilities
