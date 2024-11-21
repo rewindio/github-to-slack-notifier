@@ -1,22 +1,10 @@
-group "default" {
-    targets = ["production"]
-}
+target "docker-metadata-action" {}
 
-target "github-to-slack-notifier" {
-    context = "."
+target "build" {
+    inherits = ["docker-metadata-action"]
+    context = "./"
     dockerfile = "Dockerfile"
     platforms = [
         "linux/amd64"
     ]
-    cache = {
-        disabled = true
-    }
-}
-
-target "development" {
-    inherits = ["github-to-slack-notifier"]
-}
-
-target "production" {
-    inherits = ["github-to-slack-notifier"]
 }

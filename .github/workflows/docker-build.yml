@@ -41,7 +41,6 @@ jobs:
         id: metadata
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          bake-target: development
           tags: |
             type=raw,value=${{ env.TIMESTAMP_TAG }}
 
@@ -58,7 +57,7 @@ jobs:
           push: true
           load: true
           no-cache: true
-          targets: development
+          targets: build
 
       - name: Run Trivy to check Docker images for vulnerabilities
         uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
