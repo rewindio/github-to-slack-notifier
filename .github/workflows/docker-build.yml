@@ -36,6 +36,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Docker metadata
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
+        id: metadata
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha
+
       - name: Build for development
         uses: docker/bake-action@2e3d19baedb14545e5d41222653874f25d5b4dfb # v5.10.0
         env:
@@ -45,6 +53,8 @@ jobs:
         with:
           files: |
             ./docker-bake.hcl
+            ${{ steps.metadata.outputs.labels }}
+            ${{ steps.metadata.outputs.tags }}
           push: true
           load: true
           no-cache: true

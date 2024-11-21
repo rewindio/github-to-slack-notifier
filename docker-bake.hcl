@@ -15,9 +15,6 @@ target "github-to-slack-notifier" {
 
 target "development" {
     inherits = ["github-to-slack-notifier"]
-    tags         = [
-        "${REGISTRY}/${IMAGE_NAME}:${TIMESTAMP_TAG}"
-    ]
 }
 
 target "production" {
