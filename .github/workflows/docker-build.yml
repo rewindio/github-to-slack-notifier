@@ -41,6 +41,7 @@ jobs:
         id: metadata
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          bake-target: development
           tags: |
             type=raw,value=${{ env.TIMESTAMP_TAG }}
 
