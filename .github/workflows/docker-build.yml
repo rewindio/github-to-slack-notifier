@@ -55,7 +55,7 @@ jobs:
             ./docker-bake.hcl
             ${{ steps.metadata.outputs.bake-file }}
           push: true
-          load: true
+          load: false
           no-cache: true
           targets: build
           provenance: false
