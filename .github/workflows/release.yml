@@ -8,7 +8,6 @@ on:
       - '**/*.md'
       - '*.md'
       - 'LICENSE'
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
