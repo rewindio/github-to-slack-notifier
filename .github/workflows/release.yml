@@ -8,6 +8,7 @@ on:
       - '**/*.md'
       - '*.md'
       - 'LICENSE'
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -18,17 +19,20 @@ jobs:
     name: release
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
+      issues: write
+      pull-requests: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
       - name: Semantic Release
         id: semantic_release
         uses: cycjimmy/semantic-release-action@b1b432f13acb7768e0c8efdec416d363a57546f2 # v4.1.1
+        with:
+          dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
