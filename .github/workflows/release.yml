@@ -8,7 +8,6 @@ on:
       - '**/*.md'
       - '*.md'
       - 'LICENSE'
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -29,7 +28,6 @@ jobs:
 
       - name: Semantic Release
         id: semantic_release
-        if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: cycjimmy/semantic-release-action@b1b432f13acb7768e0c8efdec416d363a57546f2 # v4.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -53,7 +51,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-              type=semver,pattern={{version}},value=v99.99.99
+             type=semver,pattern={{version}},value=${{steps.semantic_release.outputs.new_release_version}}
 
       - name: Build for development
         uses: docker/bake-action@2e3d19baedb14545e5d41222653874f25d5b4dfb # v5.10.0
