@@ -19,7 +19,7 @@ jobs:
           python-version: "${{ env.PYTHON_VERSION }}"
 
       - name: Run image
-        uses: abatilo/actions-poetry@e78f54a89cb052fff327414dd9ff010b5d2b4dbd
+        uses: abatilo/actions-poetry@3765cf608f2d4a72178a9fc5b918668e542b89b1
 
       - name: Format
         uses: psf/black@1b2427a2b785cc4aac97c19bb4b9a0de063f9547 # v24.10.0
