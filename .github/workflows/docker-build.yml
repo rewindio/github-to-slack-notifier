@@ -45,7 +45,7 @@ jobs:
             type=raw,value=${{ env.TIMESTAMP_TAG }}
 
       - name: Build for development
-        uses: docker/bake-action@2e3d19baedb14545e5d41222653874f25d5b4dfb # v5.10.0
+        uses: docker/bake-action@60f5d53310314dbf8c33f0c8a01042536f2f6c36 # v6.2.0
         env:
           REGISTRY: ${{ env.REGISTRY }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
