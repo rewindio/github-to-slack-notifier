@@ -55,7 +55,7 @@ jobs:
              type=semver,pattern={{version}},value=${{steps.semantic_release.outputs.new_release_version}}
 
       - name: Build for development
-        uses: docker/bake-action@2e3d19baedb14545e5d41222653874f25d5b4dfb # v5.10.0
+        uses: docker/bake-action@4f08b22a19b3133912e9acbf7da9bfa25184a173 # v6.4.0
         with:
           files: |
               ./docker-bake.hcl
