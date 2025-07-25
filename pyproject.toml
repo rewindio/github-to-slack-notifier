@@ -2,7 +2,7 @@
 name = "github-to-slack-notifier"
 version = "0.1.0"
 description = "Github Action to send a Slack DM"
-authors = ["Your Name <you@example.com>"]
+authors = ["devops@rewind.io"]
 readme = "README.md"
 package-mode = false # Adding since don't need module and using src as directory
 
