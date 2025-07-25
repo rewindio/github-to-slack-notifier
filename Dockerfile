@@ -21,7 +21,7 @@ ENV POETRY_HOME="/opt/poetry" \
     POETRY_VERSION=1.8.2
 
 RUN apk update && \
-    apk add --no-cache curl bash
+    apk add --update --no-cache curl bash 'sqlite-libs>=3.49.2-r1'
 
 # Set the path
 ENV PATH="${POETRY_HOME}/bin:${VIRTUAL_ENV}/bin:${PATH}"
