@@ -22,7 +22,7 @@ jobs:
         uses: abatilo/actions-poetry@3765cf608f2d4a72178a9fc5b918668e542b89b1
 
       - name: Format
-        uses: psf/black@8a737e727ac5ab2f1d4cf5876720ed276dc8dc4b # v25.1.0
+        uses: psf/black@05f0a8ce1f71fbb36e1e032d3b518c7b945089a2 # v25.11.0
 
       - name: Install dependencies
         run:  |
