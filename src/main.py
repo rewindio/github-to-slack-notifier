@@ -38,13 +38,11 @@ def run():
     users = get_list_of_users(os.getenv("INPUT_LIST_OF_GITHUB_USERS"))
 
     if users == []:
-        logger.error(
-            f"""
+        logger.error(f"""
             User(s) was not provided in an expected format.
                 Expected a string, comma-separated string or JSON list.
                 Got: {os.getenv("INPUT_LIST_OF_GITHUB_USERS")}
-            """
-        )
+            """)
         sys.exit(2)
 
     # Only one user - send a direct message
