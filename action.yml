@@ -1,4 +1,5 @@
 name: 'GitHub to Slack notifier'
+
 description: 'Sends a Slack DM to a user from a Github Action'
 
 inputs:
